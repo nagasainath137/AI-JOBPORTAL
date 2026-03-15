@@ -2,9 +2,6 @@
 
 A full-stack job board platform where recruiters post jobs and candidates apply. AI features analyze resumes, generate cover letters, and identify skill gaps — all powered by GPT-4o-mini.
 
-![HireAI Screenshot Placeholder](./docs/screenshots/dashboard.png)
-
----
 
 ## Tech Stack
 
@@ -17,36 +14,6 @@ A full-stack job board platform where recruiters post jobs and candidates apply.
 | Auth | JWT (python-jose) + bcrypt |
 | AI | OpenAI API — gpt-4o-mini |
 
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        React Frontend                        │
-│   AuthContext → axios (JWT interceptor) → FastAPI REST API  │
-└─────────────────────────┬───────────────────────────────────┘
-                          │ HTTP / JSON
-┌─────────────────────────▼───────────────────────────────────┐
-│                      FastAPI Backend                         │
-│                                                             │
-│  /api/auth   → JWT register/login                          │
-│  /api/jobs   → CRUD job postings                           │
-│  /api/apply  → Candidate applications                      │
-│  /api/ai     → OpenAI resume/cover letter/skill gap        │
-│  /api/profile → User profile + resume upload               │
-│  /api/dashboard → Aggregated stats per role                │
-└─────────────────────────┬───────────────────────────────────┘
-                          │ SQLAlchemy ORM
-┌─────────────────────────▼───────────────────────────────────┐
-│                         MySQL 8                              │
-│   users · jobs · applications · skills · user_skills        │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**Role-based access** is enforced at the route level via a `require_role()` dependency factory in FastAPI. The frontend mirrors this with a `<ProtectedRoute roles={[...]}>` wrapper.
-
----
 
 ## Features
 
@@ -68,79 +35,13 @@ A full-stack job board platform where recruiters post jobs and candidates apply.
 - Apply to active jobs with optional cover letter
 - Track application status per job
 
-### AI Features (GPT-4o-mini)
-| Feature | Endpoint | What it does |
-|---|---|---|
-| Resume Match | `POST /api/ai/match-resume` | Scores fit %, lists missing skills, gives suggestions |
-| Cover Letter | `POST /api/ai/cover-letter` | Generates a tailored cover letter |
-| Skill Gap | `POST /api/ai/skill-gap` | Compares resume to JD, recommends learning resources |
-
 ### Dashboards
 - **Recruiter**: total jobs, active listings, applications received, shortlisted count
 - **Candidate**: jobs applied, pending / shortlisted / rejected counts
 
 ---
 
-## Project Structure
 
-```
-jobboard/
-├── backend/
-│   ├── app/
-│   │   ├── main.py            # FastAPI app, middleware, router registration
-│   │   ├── config.py          # Pydantic settings (reads .env)
-│   │   ├── database.py        # SQLAlchemy engine + session
-│   │   ├── models/
-│   │   │   └── models.py      # User, Job, Application, Skill, UserSkill
-│   │   ├── schemas/
-│   │   │   └── schemas.py     # Pydantic request/response models
-│   │   ├── auth/
-│   │   │   └── jwt.py         # Token creation, verification, role dependency
-│   │   ├── routes/
-│   │   │   ├── auth.py        # /api/auth/*
-│   │   │   ├── jobs.py        # /api/jobs/*
-│   │   │   ├── applications.py
-│   │   │   ├── profile.py     # /api/profile/*
-│   │   │   ├── dashboard.py
-│   │   │   └── ai.py          # /api/ai/*
-│   │   └── ai/
-│   │       └── openai_service.py  # Wrapper around OpenAI SDK
-│   ├── requirements.txt
-│   └── .env.example
-│
-└── frontend/
-    ├── public/
-    │   └── index.html
-    └── src/
-        ├── App.jsx            # Route definitions
-        ├── index.js
-        ├── context/
-        │   └── AuthContext.jsx    # Global auth state
-        ├── services/
-        │   ├── api.js             # Axios instance with JWT interceptor
-        │   └── jobsService.js     # All API calls
-        ├── components/
-        │   └── common/
-        │       ├── Navbar.jsx
-        │       └── ProtectedRoute.jsx
-        ├── pages/
-        │   ├── HomePage.jsx
-        │   ├── LoginPage.jsx
-        │   ├── RegisterPage.jsx
-        │   ├── JobsPage.jsx
-        │   ├── JobDetailPage.jsx
-        │   ├── JobFormPage.jsx    # Create + Edit (same component)
-        │   ├── DashboardPage.jsx  # Delegates to role-specific dashboard
-        │   ├── RecruiterDashboard.jsx
-        │   ├── CandidateDashboard.jsx
-        │   ├── ApplicationsPage.jsx
-        │   ├── AIToolsPage.jsx
-        │   └── ProfilePage.jsx
-        └── styles/
-            └── global.css
-```
-
----
 
 ## Setup
 
@@ -246,32 +147,7 @@ curl -X POST http://localhost:8000/api/ai/match-resume \
 
 ---
 
-## Screenshots
 
-> _Add screenshots here after running the app locally._
-
-| Page | Screenshot |
-|---|---|
-| Home / Landing | `docs/screenshots/home.png` |
-| Job Listings | `docs/screenshots/jobs.png` |
-| Candidate Dashboard | `docs/screenshots/candidate-dashboard.png` |
-| Recruiter Dashboard | `docs/screenshots/recruiter-dashboard.png` |
-| AI Tools | `docs/screenshots/ai-tools.png` |
-
----
-
-## Future Improvements
-
-- [ ] Email notifications on application status changes (SendGrid / SES)
-- [ ] Resume PDF parsing — extract text automatically on upload
-- [ ] Async background jobs for AI analysis (Celery + Redis)
-- [ ] Pagination on job listings and application tables
-- [ ] Admin panel for user management
-- [ ] OAuth2 login (Google, GitHub)
-- [ ] Saved/bookmarked jobs for candidates
-- [ ] Recruiter company profile pages
-- [ ] Rate limiting on AI endpoints to control OpenAI costs
-- [ ] Docker Compose setup for one-command local dev
 
 ---
 
