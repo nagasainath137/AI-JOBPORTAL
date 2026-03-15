@@ -55,7 +55,6 @@ A full-stack job board platform where recruiters post jobs and candidates apply.
 ```sql
 CREATE DATABASE jobboard_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
-
 ### 2. Backend
 
 ```bash
