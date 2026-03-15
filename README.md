@@ -40,12 +40,3 @@ A full-stack job board platform where recruiters post jobs and candidates apply.
 - **Candidate**: jobs applied, pending / shortlisted / rejected counts
 
 ---
-
-
-
-
----
-
-## License
-
-MIT
